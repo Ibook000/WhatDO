@@ -1,0 +1,152 @@
+# 后端 API 接口文档
+
+## 1. 日记条目 (Journal Entries)
+
+### 1.1. 获取所有日记条目
+- **功能**: 检索所有用户的日记条目。
+- **请求方法**: `GET`
+- **URL 路径**: `/api/entries`
+- **请求参数**: 无
+- **响应数据格式**:
+  ```json
+  [
+    {
+      "id": "string",
+      "date": "string (ISO 8601)",
+      "content": "string",
+      "media": [
+        {
+          "id": "string",
+          "type": "image" | "video" | "audio",
+          "url": "string (URL)",
+          "name": "string",
+          "size": "number (bytes)",
+          "thumbnail": "string (URL, optional)"
+        }
+      ],
+      "mood": "happy" | "sad" | "neutral" | "excited" | "calm" | "stressed",
+      "tags": ["string"],
+      "createdAt": "string (ISO 8601)",
+      "updatedAt": "string (ISO 8601)"
+    }
+  ]
+  ```
+
+### 1.2. 创建新的日记条目
+- **功能**: 创建一个新的日记条目。
+- **请求方法**: `POST`
+- **URL 路径**: `/api/entries`
+- **请求参数**:
+  ```json
+  {
+    "content": "string",
+    "media": [
+      {
+        "type": "image" | "video" | "audio",
+        "url": "string (URL, after upload)",
+        "name": "string",
+        "size": "number (bytes)"
+      }
+    ],
+    "mood": "happy" | "sad" | "neutral" | "excited" | "calm" | "stressed",
+    "tags": ["string"]
+  }
+  ```
+- **响应数据格式**:
+  ```json
+  {
+    "id": "string",
+    "date": "string (ISO 8601)",
+    "content": "string",
+    "media": [],
+    "mood": "string",
+    "tags": [],
+    "createdAt": "string (ISO 8601)",
+    "updatedAt": "string (ISO 8601)"
+  }
+  ```
+  (成功创建的日记条目对象，包含生成的 `id` 和时间戳)
+
+### 1.3. 通过 ID 获取单个日记条目
+- **功能**: 根据ID检索单个日记条目。
+- **请求方法**: `GET`
+- **URL 路径**: `/api/entries/:id`
+- **请求参数**: 无
+- **响应数据格式**:
+  ```json
+  {
+    "id": "string",
+    "date": "string (ISO 8601)",
+    "content": "string",
+    "media": [],
+    "mood": "string",
+    "tags": [],
+    "createdAt": "string (ISO 8601)",
+    "updatedAt": "string (ISO 8601)"
+  }
+  ```
+  (如果找到，返回对应的日记条目对象；如果未找到，返回 404 Not Found)
+
+### 1.4. 更新日记条目
+- **功能**: 更新现有日记条目。
+- **请求方法**: `PUT`
+- **URL 路径**: `/api/entries/:id`
+- **请求参数**:
+  ```json
+  {
+    "content": "string (optional)",
+    "media": [],
+    "mood": "string (optional)",
+    "tags": []
+  }
+  ```
+  (要更新的字段，至少包含一个)
+- **响应数据格式**:
+  ```json
+  {
+    "id": "string",
+    "date": "string (ISO 8601)",
+    "content": "string",
+    "media": [],
+    "mood": "string",
+    "tags": [],
+    "createdAt": "string (ISO 8601)",
+    "updatedAt": "string (ISO 8601)"
+  }
+  ```
+  (成功更新后的日记条目对象)
+
+### 1.5. 删除日记条目
+- **功能**: 删除指定的日记条目。
+- **请求方法**: `DELETE`
+- **URL 路径**: `/api/entries/:id`
+- **请求参数**: 无
+- **响应数据格式**:
+  ```json
+  {
+    "message": "Journal entry deleted successfully."
+  }
+  ```
+  (如果删除成功，返回成功消息；如果未找到，返回 404 Not Found)
+
+## 2. 媒体上传 (Media Upload)
+
+### 2.1. 上传媒体文件
+- **功能**: 上传图片、视频或音频文件。
+- **请求方法**: `POST`
+- **URL 路径**: `/api/upload`
+- **请求参数**: `multipart/form-data`，包含一个或多个文件。
+  - `file`: 上传的文件 (可以是 `image/*`, `video/*`, `audio/*`)
+- **响应数据格式**:
+  ```json
+  [
+    {
+      "id": "string",
+      "url": "string (URL of uploaded file)",
+      "name": "string (original file name)",
+      "type": "image" | "video" | "audio",
+      "size": "number (bytes)"
+    }
+  ]
+  ```
+  (上传成功的文件信息列表)
